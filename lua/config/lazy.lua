@@ -27,6 +27,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 									-- import your plugins
 									{ import = "plugins" },
 								},
+
 								checker = { 
 									enabled = true,
 									notify = false
