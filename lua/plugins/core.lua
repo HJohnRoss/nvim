@@ -8,7 +8,7 @@ return {
 		local configs = require("nvim-treesitter.configs")
 
 			configs.setup({
-				ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "elixir", "heex", "javascript", "html" },
+				ensure_installed = {  },
 				sync_install = false,
 				highlight = { enable = true },
 				indent = { enable = true },  
@@ -28,13 +28,16 @@ return {
 
 	{ "williamboman/mason.nvim" },
 
+	-- {
+	-- 	"dundalek/lazy-lsp.nvim",
+	-- 	dependencies = { "neovim/nvim-lspconfig" },
+	-- 	config = function()
+	-- 		require("lazy-lsp").setup {}
+	-- 	end
+	-- },
 	{
-		"dundalek/lazy-lsp.nvim",
-		dependencies = { "neovim/nvim-lspconfig" },
-		config = function()
-			require("lazy-lsp").setup {}
-		end
+		"williamboman/mason.nvim",
+		"williamboman/mason-lspconfig.nvim",
+		"neovim/nvim-lspconfig",
 	},
-
-
 }
