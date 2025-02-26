@@ -1,8 +1,11 @@
 return {
-	"bluz71/vim-moonfly-colors",
-	name = "moonfly",
+	-- "bluz71/vim-moonfly-colors",
+	"catppuccin/nvim",
+	name = "catppuccin",
 	lazy = false,
 	config = function()
-		vim.cmd("colorscheme moonfly")
+		vim.opt.background = "dark"
+		-- vim.cmd.colorscheme = "catppuccin"
+		vim.cmd("colorscheme catppuccin")
 	end
 }

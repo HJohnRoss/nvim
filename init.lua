@@ -1,5 +1,6 @@
 require("config.lazy");
 require("config.settings")
+require('gitsigns').setup()
 
 
 -- lsp setup
