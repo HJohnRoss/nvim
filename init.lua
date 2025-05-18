@@ -1,15 +1,9 @@
--- Create an autocmd group for Razor files
-vim.api.nvim_create_augroup('RazorFileType', { clear = true })
-
--- Create an autocommand to set the filetype to razor for .razor files
-vim.api.nvim_create_autocmd(
-  { 'BufRead', 'BufNewFile' }, -- Events as a list
-  {
-    pattern = '*.razor', -- Match files with .razor extension
-    command = 'set filetype=razor', -- Command to run
-    group = 'RazorFileType', -- Attach to the 'RazorFileType' group
-  }
-)
+vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
+  pattern = '*.razor',
+  callback = function()
+    vim.bo.filetype = 'html'
+  end,
+})
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 vim.o.expandtab = true
@@ -944,7 +938,7 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.indent_line',
+  -- require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',

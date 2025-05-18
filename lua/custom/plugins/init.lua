@@ -9,4 +9,11 @@ return {
       'neovim/nvim-lspconfig', -- Ensure nvim-lspconfig is already installed
     },
   },
+  {
+    'windwp/nvim-ts-autotag',
+    config = function()
+      require('nvim-ts-autotag').setup()
+    end,
+    event = 'InsertEnter',
+  },
 }
