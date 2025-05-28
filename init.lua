@@ -1,16 +1,3 @@
--- Create an autocmd group for Razor files
-vim.api.nvim_create_augroup('RazorFileType', { clear = true })
-
--- Create an autocommand to set the filetype to razor for .razor files
-vim.api.nvim_create_autocmd(
-  { 'BufRead', 'BufNewFile' }, -- Events as a list
-  {
-    pattern = '*.razor', -- Match files with .razor extension
-    command = 'set filetype=razor', -- Command to run
-    group = 'RazorFileType', -- Attach to the 'RazorFileType' group
-  }
-)
-
 vim.opt.guicursor = 'n-v-c:block,i-ci-ve:block,r-cr:block,o:hor20'
 
 vim.o.tabstop = 4
@@ -603,11 +590,53 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      local util = require 'lspconfig.util'
       local servers = {
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
+
+        ts_ls = {},
+        eslint = {
+          filetypes = {
+            'javascript',
+            'javascriptreact',
+            'typescript',
+            'typescriptreact',
+            'vue',
+            'svelte',
+            'astro',
+          },
+          root_dir = function(fname)
+            return util.root_pattern(
+              'eslint.config.js',
+              '.eslintrc',
+              '.eslintrc.js',
+              '.eslintrc.cjs',
+              '.eslintrc.json',
+              '.eslintrc.yaml',
+              '.eslintrc.yml',
+              'package.json',
+              'node_modules'
+            )(fname) or util.fs.dirname(fname)
+          end,
+          settings = {
+            nodePath = vim.fn.trim(vim.fn.system 'npm root -g'), -- optional
+            format = false,
+            validate = 'on',
+            run = 'onType',
+            codeActionOnSave = {
+              enable = true,
+              mode = 'all',
+            },
+            experimental = {
+              useFlatConfig = true, -- ✅ MUST be true for `eslint.config.js`
+            },
+            workingDirectory = { mode = 'location' },
+          },
+        },
+
         omnisharp = {
           cmd = { 'omnisharp', '--languageserver', '--hostPID', tostring(vim.fn.getpid()) },
           filetypes = { 'cs', 'vb' },
@@ -659,6 +688,11 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'eslint-lsp',
+        'html',
+        'cssls',
+        'clangd',
+        'omnisharp',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -715,7 +749,7 @@ require('lazy').setup({
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -742,12 +776,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
         opts = {},
       },
