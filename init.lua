@@ -503,6 +503,7 @@ require("lazy").setup({
 			-- Allows extra capabilities provided by blink.cmp
 			"saghen/blink.cmp",
 		},
+
 		config = function()
 			-- Brief aside: **What is LSP?**
 			--
@@ -692,6 +693,25 @@ require("lazy").setup({
 			--  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
 			--  - settings (table): Override the default settings passed when initializing the server.
 			--        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+			config = function()
+				local lspconfig = require("lspconfig") -- safe inside config
+
+				lspconfig.omnisharp.setup({
+					cmd = { "/home/john/.local/share/nvim/mason/bin/OmniSharp" },
+					enable_roslyn_analyzers = true,
+					organize_imports_on_format = true,
+					enable_import_completion = true,
+					sdk_include_prereleases = true,
+					on_attach = function(client, bufnr)
+						local opts = { noremap = true, silent = true, buffer = bufnr }
+						vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+						vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+						vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+						vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+					end,
+				})
+			end
+
 			local servers = {
 				-- clangd = {},
 				-- gopls = {},
@@ -1026,7 +1046,7 @@ require("lazy").setup({
 	-- require 'kickstart.plugins.debug',
 	-- require 'kickstart.plugins.indent_line',
 	-- require 'kickstart.plugins.lint',
-	-- require 'kickstart.plugins.autopairs',
+	require("kickstart.plugins.autopairs"),
 	-- require 'kickstart.plugins.neo-tree',
 	-- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
